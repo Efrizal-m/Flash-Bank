@@ -17,7 +17,7 @@ func GetAllCustomer(db *sql.DB) (results []structs.Customer, err error) {
 
 	for rows.Next() {
 		var customer = structs.Customer{}
-		err = rows.Scan(&customer.ID, &customer.Name, &customer.IDCardNumber, &customer.Address, &customer.CIF)
+		err = rows.Scan(&customer.ID, &customer.Name, &customer.IDCardNumber, &customer.Address, &customer.CIF, &customer.CreatedAt, &customer.UpdatedAt)
 		if err != nil {
 			panic(err)
 		}

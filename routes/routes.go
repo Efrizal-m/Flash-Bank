@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	controllers "flashbank/controller"
+	middlewares "flashbank/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,25 +12,23 @@ import (
 // RegisterRoutes registers all routes for the application
 func RegisterRoutes(router *gin.Engine) {
 	router.GET("/", homeHandler)
-	router.GET("/about", aboutHandler)
-	// Add more routes as needed
 
-	router.GET("/customer", controllers.GetAllCustomer)
-	router.POST("/customer", controllers.InsertCustomer)
-	router.GET("/customer/:id", controllers.GetCustomerById)
-	router.PUT("/customer/:id", controllers.Updatecustomer)
-	router.DELETE("/customer/:id", controllers.Deletecustomer)
+	public := router.Group("/")
+	public.POST("/register", controllers.Register)
+	public.POST("/login", controllers.Login)
 
-	router.GET("/saldo/:customer_id", controllers.GetSaldoByCustomerId)
-
-	router.POST("/transaction/:customer_id", controllers.AddTransaction)
-	router.GET("/report/:tx_date", controllers.GetReportByDate)
+	protected := router.Group("/adm")
+	protected.Use(middlewares.JwtAuthMiddleware())
+	protected.GET("/customer", controllers.GetAllCustomer)
+	protected.POST("/customer", controllers.InsertCustomer)
+	protected.GET("/customer/:id", controllers.GetCustomerById)
+	protected.PUT("/customer/:id", controllers.Updatecustomer)
+	protected.DELETE("/customer/:id", controllers.Deletecustomer)
+	protected.POST("/transaction/:customer_id", controllers.AddTransaction)
+	protected.GET("/saldo/:customer_id", controllers.GetSaldoByCustomerId)
+	protected.GET("/report/:tx_date", controllers.GetReportByDate)
 }
 
 func homeHandler(c *gin.Context) {
-	c.String(http.StatusOK, "Home Page")
-}
-
-func aboutHandler(c *gin.Context) {
-	c.String(http.StatusOK, "About Page")
+	c.String(http.StatusOK, "Flash Bank API")
 }

@@ -4,6 +4,8 @@ import (
 	"flashbank/database"
 	"flashbank/repository"
 	"flashbank/structs"
+
+	token "flashbank/utils"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -17,6 +19,12 @@ func GetAllCustomer(c *gin.Context) {
 	var (
 		result gin.H
 	)
+
+	_, err := token.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		return
+	}
 
 	customers, err := repository.GetAllCustomer(database.DbConnection)
 	if err != nil {
