@@ -35,7 +35,7 @@ func GetCustomerById(db *sql.DB, id int) (customer structs.Customer, err error) 
 
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&customer.ID, &customer.Name, &customer.IDCardNumber, &customer.Address, &customer.CIF)
+		err = rows.Scan(&customer.ID, &customer.Name, &customer.IDCardNumber, &customer.Address, &customer.CIF, &customer.CreatedAt, &customer.UpdatedAt)
 		if err != nil {
 			panic(err)
 		}

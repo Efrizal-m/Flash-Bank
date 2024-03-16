@@ -12,11 +12,9 @@ import (
 // RegisterRoutes registers all routes for the application
 func RegisterRoutes(router *gin.Engine) {
 	router.GET("/", homeHandler)
-
 	public := router.Group("/")
 	public.POST("/register", controllers.Register)
 	public.POST("/login", controllers.Login)
-
 	protected := router.Group("/adm")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.GET("/customer", controllers.GetAllCustomer)
