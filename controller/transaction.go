@@ -49,16 +49,24 @@ func AddTransaction(c *gin.Context) {
 	}
 	saldo.CustomerID = customer_id
 	saldo.TransactionDate = time.Now()
-	err = repository.AddSaldo(database.DbConnection, saldo)
+
+	saldo_id, err := repository.AddSaldo(database.DbConnection, saldo)
 	if err != nil {
 		panic(err)
 	}
+	if saldo_id == 0 {
+		saldo_id++
+	}
 
-	transaction.SaldoID = saldo.ID
 	transaction.TransactionDate = time.Now()
+	transaction.SaldoID = saldo_id
+
 	transaction_id, err := repository.AddTransaction(database.DbConnection, transaction)
 	if err != nil {
 		panic(err)
+	}
+	if transaction_id == 0 {
+		transaction_id++
 	}
 
 	report.TransactionID = transaction_id

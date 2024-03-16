@@ -70,13 +70,16 @@ func InsertCustomer(c *gin.Context) {
 	customer.CreatedAt = time.Now()
 	customer.UpdatedAt = time.Now()
 
-	err = repository.InsertCustomer(database.DbConnection, customer)
+	customer_id, err := repository.InsertCustomer(database.DbConnection, customer)
 	if err != nil {
 		panic(err)
 	}
-
+	if customer_id == 0 {
+		customer_id++
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert customer",
+		"result":      "Success Insert customer",
+		"customer_id": customer_id,
 	})
 }
 

@@ -44,10 +44,11 @@ func GetCustomerById(db *sql.DB, id int) (customer structs.Customer, err error) 
 	return
 }
 
-func InsertCustomer(db *sql.DB, customer structs.Customer) (err error) {
-	sql := "INSERT INTO customer (customer_id, name, idcard_number, address, cif, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)"
-	errs := db.QueryRow(sql, customer.ID, customer.Name, customer.IDCardNumber, customer.Address, customer.CIF, customer.CreatedAt, customer.UpdatedAt)
-	return errs.Err()
+func InsertCustomer(db *sql.DB, customer structs.Customer) (customer_id int, err error) {
+	sql := "INSERT INTO customer (name, idcard_number, address, cif, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING customer_id"
+	err = db.QueryRow(sql, customer.Name, customer.IDCardNumber, customer.Address, customer.CIF, customer.CreatedAt, customer.UpdatedAt).Scan(&customer.ID)
+	customer_id = customer.ID
+	return
 }
 
 func UpdateCustomer(db *sql.DB, customer structs.Customer) (err error) {

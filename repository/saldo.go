@@ -40,10 +40,11 @@ func GetSaldoByCustomerAndDate(db *sql.DB, customer_id int, date string) (saldo 
 	return
 }
 
-func AddSaldo(db *sql.DB, saldo structs.Saldo) (err error) {
-	sql := "INSERT INTO saldo (customer_id, saldo, transaction_date) VALUES ($1, $2, $3)"
-	errs := db.QueryRow(sql, saldo.CustomerID, saldo.Saldo, saldo.TransactionDate)
-	return errs.Err()
+func AddSaldo(db *sql.DB, saldo structs.Saldo) (saldo_id int, err error) {
+	sql := "INSERT INTO saldo (customer_id, saldo, transaction_date) VALUES ($1, $2, $3) RETURNING saldo_id"
+	err = db.QueryRow(sql, saldo.CustomerID, saldo.Saldo, saldo.TransactionDate).Scan(&saldo.ID)
+	saldo_id = saldo.ID
+	return
 }
 
 func GetCustomerLastSaldo(db *sql.DB, customer_id int) (saldo structs.Saldo, err error) {
