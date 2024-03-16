@@ -106,15 +106,9 @@ func Updatecustomer(c *gin.Context) {
 func Deletecustomer(c *gin.Context) {
 	var customer structs.Customer
 	id, _ := strconv.Atoi(c.Param("id"))
-
-	err := c.ShouldBindJSON(&customer)
-	if err != nil {
-		panic(err)
-	}
-
 	customer.ID = id
 
-	err = repository.DeleteCustomer(database.DbConnection, customer)
+	err := repository.DeleteCustomer(database.DbConnection, customer)
 	if err != nil {
 		panic(err)
 	}
